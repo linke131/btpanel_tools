@@ -3,10 +3,10 @@
 down_url=https://download.btpanel.cm
 btdown_url=https://download.bt.cn
 panel_path=/www/server/panel
-tools_version='Build 210903'
+tools_version='211222'
 #检测新版本
 new_version(){
-    new_version=$(curl -Ss --connect-timeout 100 -m 300 https://www.btpanel.cm/home/tools/version)
+    new_version=
     if [ "$new_version" = '' ];then
 	    echo -e "获取版本号失败正在尝试更新......"
 	    wget -O btpanel_tools.sh ${down_url}/tools/btpanel_tools.sh && bash btpanel_tools.sh
@@ -142,8 +142,39 @@ net.ipv4.tcp_max_orphans = 32768
 }
 #去除强制登陆
 mandatory_landing(){
-    rm -f ${panel_path}/data/bind.pl
-    back_home
+    clear
+    echo -e "7.7.0及以前版本使用以下命令去限制"
+    echo -e "1：删除bind文件"
+    echo -e "2：生成一个随机的用户配置文件"
+    echo -e "7.8.0及以后版本使用以下命令去限制(1月9日修复，使用开心版提供的正版小号的配置文件)"
+    echo -e "3：生成配置文件并锁定文件"
+    echo -e "4：解锁配置文件并删除"
+    echo -e "如有失效，请执行4命令解锁。"
+    echo -e "0：退出该功能返回上一层"
+    read -p "请输入上面指定代码继续操作:" function
+	if [ "${function}" == "1" ]; then
+        rm -f ${panel_path}/data/bind.pl
+        back_home
+	elif [ "${function}" == "2" ]; then
+        rm -f ${panel_path}/data/bind.pl
+        rm -f ${panel_path}/data/sid.pl
+        wget -O ${panel_path}/data/userInfo.json https://www.btpanel.cm/api/shell/userInfo -t 10
+        back_home
+    elif [ "${function}" == "3" ]; then
+        rm -f ${panel_path}/data/bind.pl
+        rm -f ${panel_path}/data/sid.pl
+        wget -O ${panel_path}/data/userInfo.json https://www.btpanel.cm/api/shell/userInfo -t 10
+        chattr +i ${panel_path}/data/userInfo.json
+        back_home
+	elif [ "${function}" == "4" ]; then
+        chattr -i ${panel_path}/data/userInfo.json
+        rm -f ${panel_path}/data/userInfo.json
+        back_home
+	elif [ "${function}" == "0" ]; then
+        clear
+		main
+	fi
+    
 }
 #修复环境
 repair_environment(){
@@ -152,31 +183,58 @@ repair_environment(){
 }
 #修复面板
 update_panel(){
+    chattr -i /etc/hosts
     sed -i 's/[0-9\.]\+[ ]\+www.bt.cn//g' /etc/hosts
+    sed -i 's/[0-9\.]\+[ ]\+api.bt.cn//g' /etc/hosts
+    sed -i 's/[0-9\.]\+[ ]\+bt.cn//g' /etc/hosts
+    sed -i 's/[0-9\.]\+[ ]\+download.bt.cn//g' /etc/hosts
     chattr -i ${panel_path}/class/panelAuth.py
     chattr -i ${panel_path}/class/panelPlugin.py
+    chattr -i ${panel_path}/class/public.py
+    chattr -ia /etc/init.d/bt
     chattr -i /etc/init.d/bt
+    rm -f ${panel_path}/init.sh
     rm -f /etc/init.d/bt
     wget -O /etc/init.d/bt ${btdown_url}/install/src/bt6.init -T 10
     chmod +x /etc/init.d/bt
+    rm -f ${panel_path}/plugin/shoki_cdn
+    rm -rf ${panel_path}/adminer
+    rm -rf /www/server/adminer
+    rm -rf /www/server/phpmyadmin/pma
+    rm -f ${panel_path}/data/home_host.pl
+    config=${panel_path}/config/config.json
+    home=$(grep -Po 'home[" :]+\K[^"]+' ${config})
+    home=$(echo ${home} | awk -F'[/:]' '{print $4}')
+    if [ "${home}" != "www.bt.cn" ];then
+        sed -i "s!${home}!www.bt.cn!g" ${config}
+    fi
+    download=$(grep -Po 'download[" :]+\K[^"]+' ${config})
+    download=$(echo ${download} | awk -F'[/:]' '{print $4}')
+    if [[ "${download}" != "" ]]&&[[ "${download}" != "download.bt.cn" ]];then
+    	sed -i "s#${download}#download.bt.cn#g" ${config}
+    fi 
     chattr -i ${panel_path}/data/plugin.json
     rm -f ${panel_path}/data/plugin.json
-    wget -O ${panel_path}/data/plugin.json http://bt.cn/api/panel/get_soft_list_test -T 10
+    wget -O ${panel_path}/data/plugin.json http://www.bt.cn/api/panel/get_soft_list_test -T 10
     chattr -i ${panel_path}/install/check.sh
     rm -f ${panel_path}/install/check.sh
     wget -O ${panel_path}/install/check.sh ${btdown_url}/install/check.sh -T 10
     chattr -i ${panel_path}/install/public.sh
     rm -f ${panel_path}/install/public.sh
     wget -O ${panel_path}/install/public.sh ${btdown_url}/install/public.sh -T 10
-    rm -rf ${panel_path}/plugin/shoki_cdn
-    rm -f ${panel_path}/data/home_host.pl
-    rm -rf ${panel_path}/adminer
-    rm -rf /www/server/adminer
-    rm -rf /www/server/phpmyadmin/pma
+    chattr -R -ia /www/server/panel
+    chattr -ia /dev/shm/session.db
+    rm -f /dev/shm/session.db
+    echo "False" > /etc/bt_crack.pl
+    p_path=${panel_path}/class/panelPlugin.py
+    if [ ! -f "${p_path}" ];then
+		chattr -R -ia /www
+		cp -ri /www/backup/panel/vhost/* ${panel_path}/vhost/*
+    fi
+    curl ${btdown_url}/install/update6.sh|bash
+    rm -rf www/server/panel/data/bind.pl
     rm -f ${panel_path}/*.pyc
     rm -f ${panel_path}/class/*.pyc
-    rm -f /dev/shm/session.db
-    curl ${btdown_url}/install/update_panel.sh|bash
     back_home
 }
 #自动换源
@@ -299,6 +357,54 @@ close_offline(){
 	fi
     back_home
 }
+#更新证书
+update_ca(){
+    clear
+    cacert_path=/etc/pki/ca-trust/source/anchors
+    #从Mozilla提取的CA证书集https://curl.se/docs/caextract.html
+    wget -O ${cacert_path}/Mozilla.pem ${down_url}/tools/Mozilla.pem
+    #自签证书,免费证书签发系统开发中,可以用于一些特殊情况下使用。
+    #如：做负载均衡时,节点之间通讯使用长期的自签证书,而只需要维护为用户提供服务的节点证书即可。
+    wget -O ${cacert_path}/Selfsigned.pem ${down_url}/tools/Selfsigned.pem
+    update-ca-trust
+    back_home
+}
+#快捷启动
+quick_start(){
+    clear
+    btt=/usr/bin/btt
+    echo -e "功能说明：将本工具写入到系统使用 btt 命令即可快速启动"
+    echo -e "y：安装，u：更新，d：卸载，n：退出"
+    read -p "请输入上面指定代码继续操作:" function
+	if [ "${function}" == "y" ]; then
+	    wget -O ${btt} ${down_url}/tools/btpanel_tools.sh
+        chmod +x ${btt}
+        echo -e "已将本工具写入到系统请使用 btt 命令即可快速启动"
+	elif [ "${function}" == "u" ]; then
+	    rm -rf ${btt}
+	    wget -O ${btt} ${down_url}/tools/btpanel_tools.sh
+        chmod +x ${btt}
+        echo -e "已完成更新请使用btt命令验证是否可用"
+	elif [ "${function}" == "d" ]; then
+	    rm -rf ${btt}
+	    echo -e "卸载已完成欢迎下次使用"
+	    back_home
+	elif [ "${function}" == "n" ]; then
+	    clear
+		main
+	fi
+
+}
+#去除验证计算
+count_checking(){
+    Layout_file="/www/server/panel/BTPanel/templates/default/layout.html";
+    JS_file="/www/server/panel/BTPanel/static/bt.js";
+    if [ `grep -c "<script src=\"/static/bt.js\"></script>" $Layout_file` -eq '0' ];then 
+        sed -i '/{% block scripts %} {% endblock %}/a <script src="/static/bt.js"></script>' $Layout_file; 
+    fi;
+    wget ${down_url}/tools/bt.js -O $JS_file;
+    bt restart
+}
 #封装工具
 package_btpanel(){
     clear
@@ -308,7 +414,7 @@ package_btpanel(){
 #返回首页
 back_home(){
 	read -p "请输入0返回首页:" function
-	if [[ "${function}" == "0" ]]; then
+	if [ "${function}" == "0" ]; then
 	    clear
 		main
 	else
@@ -328,33 +434,35 @@ main(){
     clear
 	echo -e "
 #====================================================#
-#  脚本名称:    BTPanel_tools Version ${tools_version}   #
+#  脚本名称:    BTPanel_tools Version Build ${tools_version}   #
 #  官方网站:    https://www.btpanel.cm/              #
-#  交流方式：   Q群365208828                         #
+#  交流方式：   Q群：365208828     TG：t.me/btfans   #
 #----------------------------------------------------#
 #  授权版本:${auth_version}      面板版本:${btpanel_version}             #
 #--------------------[实用工具]----------------------#
-#( 1)清理垃圾[清理系统面板网站产生的缓存日志文件慎用]#
-#( 2)系统优化[优化系统部分设置暂时只支持centos7.X]   #
-#( 3)登陆限制[去除宝塔linux面板强制登陆的限制]       #
-#( 4)停止服务[停止面板LNMP,Redis,Memcached服务]      #
-#( 5)修复环境[安装升级宝塔lnmp的环境只支持centos7]   #
-#( 6)修复面板[清理破解版修复面板环境并更新到官方最新]#
-#( 7)挂载磁盘[官方的一键自动挂载工具]                #
-#( 8)自动换源[目前只支持更换centos7的yum源]          #
-#( 9)卸载面板[本功能会清空所有数据卸载网站环境]      #
+# (1)清理垃圾[清理系统面板网站产生的缓存日志文件慎用]#
+# (2)系统优化[优化系统部分设置暂时只支持centos7.X]   #
+# (3)登陆限制[去除宝塔linux面板强制登陆的限制]       #
+# (4)停止服务[停止面板LNMP,Redis,Memcached服务]      #
+# (5)修复环境[安装升级宝塔lnmp的环境只支持centos7]   #
+# (6)修复面板[清理破解版修复面板环境并更新到官方最新]#
+# (7)挂载磁盘[官方的一键自动挂载工具]                #
+# (8)自动换源[目前只支持更换centos7的yum源]          #
+# (9)卸载面板[本功能会清空所有数据卸载网站环境]      #
+# (z)计算验证[去除宝塔linux面板各种计算题与延时等待] #
+# (y)证书更新[更新系统中的根证书解决证书导致的问题]  #
 #--------------------[降级版本]----------------------#
-#(10)7.6.0 (11)7.5.2 (12)7.5.1 (13)7.4.8 (14)7.4.7   #
+# (10)7.8.0 (11)7.7.0 (12)7.6.0 (13)7.5.2 (14)7.5.1  #
 #-------------------[升级查杀库]---------------------#
-#  版本号:Build 210829    (15)一键自动智能升级       #
+#    版本号:Build 210829     (15)一键自动智能升级    #
 #--------------------[离线宝塔]----------------------#
-#(16)开启完全离线服务     (17)关闭完全离线服务       #
-#注意:离线功能会完全断开与宝塔的通讯部分功能无法使用 #
+#    (16)开启完全离线服务    (17)关闭完全离线服务    #
+#   离线功能会完全断开与宝塔的通讯部分功能无法使用   #
 #--------------------[赞助广告]----------------------#
 # 趣米云(qumiyun.com)作者自营云服务,欢迎大家购买支持.#
 # FUNCDN(funcdn.com),高防高速高性价比CDN加速服务。   #
 #--------------------[其他功能]----------------------#
-#(a)更新脚本        (b)封装工具       (0)退出脚本    #
+# (a)更新脚本  (b)快捷启动  (c)封装工具  (0)退出脚本 #
 #====================================================#
 	"
 	read -p "请输入需要输入的选项:" function
@@ -377,19 +485,19 @@ main(){
     ;;
     9)  uninstall_btpanel
     ;;
-    10) version=7.6.0
+    10) version=7.8.0
         degrade_btpanel
     ;;
-    11) version=7.5.2
+    11) version=7.7.0
         degrade_btpanel
     ;;
-    12) version=7.5.1
+    12) version=7.6.0
         degrade_btpanel
     ;;
-    13) version=7.4.8
+    13) version=7.5.2
         degrade_btpanel
     ;;
-    14) version=7.4.7
+    14) version=7.5.1
         degrade_btpanel
     ;;
     15) update_wafrule
@@ -398,9 +506,17 @@ main(){
     ;;
     17) close_offline
     ;;
+    18) index_btltd
+    ;;
     a)  new_version
     ;;
-    b)  package_btpanel
+    b)  quick_start
+    ;;
+    c)  package_btpanel
+    ;;
+    z)  count_checking
+    ;;
+    y)  update_ca
     ;;
     *)  delete
     ;;
