@@ -160,14 +160,14 @@ mandatory_landing(){
         rm -f ${panel_path}/data/sid.pl
         wget -O ${panel_path}/data/userInfo.json ${down_url}/userInfo.json -t 10
         getip=$(curl -Ss --connect-timeout 100 -m 300 https://www.bt.cn/Api/getIpAddress)
-        sed -i "s!127.0.0.1!${getip}!g" ${down_url}/userInfo.json
+        sed -i "s!127.0.0.1!${getip}!g" ${panel_path}/data/userInfo.json
         back_home
     elif [ "${function}" == "3" ]; then
         rm -f ${panel_path}/data/bind.pl
         rm -f ${panel_path}/data/sid.pl
         wget -O ${panel_path}/data/userInfo.json ${down_url}/userInfo.json -t 10
         getip=$(curl -Ss --connect-timeout 100 -m 300 https://www.bt.cn/Api/getIpAddress)
-        sed -i "s!127.0.0.1!${getip}!g" ${down_url}/userInfo.json
+        sed -i "s!127.0.0.1!${getip}!g" ${panel_path}/data/userInfo.json
         chattr +i ${panel_path}/data/userInfo.json
         back_home
 	elif [ "${function}" == "4" ]; then
