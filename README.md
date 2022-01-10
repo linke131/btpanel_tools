@@ -4,6 +4,7 @@
 它包含了一键修改宝塔面板模板、去除强制登陆、一键修复面板、一键更换yum源、清除系统垃圾缓存、系统优化等一系列常见的Linux运维需求。
 ###### 作品截图
  ![btpanel_tools](https://gitee.com/gacjie/btpanel_tools/raw/master/btpanel_tools.jpg) 
+ **[(点此免费领取0.99元专业版体验券，3188元大礼包)](https://www.bt.cn/?invite_code=MV9yaHFycXY=)** 
 ###### 码云项目地址命令
 ```shell-session
 wget -O btpanel_tools.sh https://gitee.com/gacjie/btpanel_tools/raw/master/btpanel_tools.sh && bash btpanel_tools.sh
