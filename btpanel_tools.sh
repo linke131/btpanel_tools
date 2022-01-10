@@ -304,7 +304,7 @@ degrade_btpanel(){
 }
 #升级查杀库
 update_wafrule(){
-    wget -O /root/rule.json ${down_url}/tools/Template/rule.json
+    wget -O /root/rule.json ${down_url}/rule.json
 	PLUGIN_NAME=(free_waf btwaf btwaf_httpd hm_shell_san webshell);
 	for name in ${PLUGIN_NAME[@]};
 	do
