@@ -1,6 +1,6 @@
 #!/bin/bash
 #全局变量
-down_url=https://download.btpanel.cm
+down_url=https://gitee.com/gacjie/btpanel_tools/raw/master
 btdown_url=https://download.bt.cn
 panel_path=/www/server/panel
 tools_version='211222'
@@ -9,13 +9,13 @@ new_version(){
     new_version=
     if [ "$new_version" = '' ];then
 	    echo -e "获取版本号失败正在尝试更新......"
-	    wget -O btpanel_tools.sh ${down_url}/tools/btpanel_tools.sh && bash btpanel_tools.sh
+	    wget -O btpanel_tools.sh ${down_url}/btpanel_tools.sh && bash btpanel_tools.sh
 	    exit 0
 	    
     fi
     if [ "${new_version}" != ${tools_version} ];then
         echo -e "检测到已发布新版本正在尝试更新......"
-	    wget -O btpanel_tools.sh ${down_url}/tools/btpanel_tools.sh && bash btpanel_tools.sh
+	    wget -O btpanel_tools.sh ${down_url}/btpanel_tools.sh && bash btpanel_tools.sh
 	    exit 0
     fi
     echo -e "还没有发布新版本"
