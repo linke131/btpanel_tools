@@ -244,7 +244,7 @@ update_panel(){
 #自动换源
 yum_source(){
     clear
-    wget -O yumRepo.sh ${down_url}/tools/yumRepo.sh && sh yumRepo.sh
+    wget -O yumRepo.sh ${down_url}/yumRepo.sh && sh yumRepo.sh
     back_home
 }
 
@@ -270,7 +270,7 @@ stop_btpanel(){
 }
 #卸载面板
 uninstall_btpanel(){
-    wget -O bt-uninstall.sh ${down_url}/tools/bt-uninstall.sh && bash bt-uninstall.sh
+    wget -O bt-uninstall.sh ${down_url}/bt-uninstall.sh && bash bt-uninstall.sh
     rm -rf bt-uninstall.sh
     rm -rf /tmp/*.sh
     rm -rf /tmp/*.sock
@@ -279,7 +279,7 @@ uninstall_btpanel(){
 mount_disk(){
 	echo -e "注意：本工具会将数据盘挂载到www目录。15秒后跳转到挂载脚本。"
     sleep 15s
-	wget -O auto_disk.sh ${down_url}/tools/auto_disk.sh && bash auto_disk.sh
+	wget -O auto_disk.sh ${down_url}/auto_disk.sh && bash auto_disk.sh
 	rm -rf /auto_disk.sh
     rm -rf auto_disk.sh
     back_home
@@ -366,10 +366,10 @@ update_ca(){
     clear
     cacert_path=/etc/pki/ca-trust/source/anchors
     #从Mozilla提取的CA证书集https://curl.se/docs/caextract.html
-    wget -O ${cacert_path}/Mozilla.pem ${down_url}/tools/Mozilla.pem
+    wget -O ${cacert_path}/Mozilla.pem ${down_url}/Mozilla.pem
     #自签证书,免费证书签发系统开发中,可以用于一些特殊情况下使用。
     #如：做负载均衡时,节点之间通讯使用长期的自签证书,而只需要维护为用户提供服务的节点证书即可。
-    wget -O ${cacert_path}/Selfsigned.pem ${down_url}/tools/Selfsigned.pem
+    wget -O ${cacert_path}/Selfsigned.pem ${down_url}/Selfsigned.pem
     update-ca-trust
     back_home
 }
@@ -381,12 +381,12 @@ quick_start(){
     echo -e "y：安装，u：更新，d：卸载，n：退出"
     read -p "请输入上面指定代码继续操作:" function
 	if [ "${function}" == "y" ]; then
-	    wget -O ${btt} ${down_url}/tools/btpanel_tools.sh
+	    wget -O ${btt} ${down_url}/btpanel_tools.sh
         chmod +x ${btt}
         echo -e "已将本工具写入到系统请使用 btt 命令即可快速启动"
 	elif [ "${function}" == "u" ]; then
 	    rm -rf ${btt}
-	    wget -O ${btt} ${down_url}/tools/btpanel_tools.sh
+	    wget -O ${btt} ${down_url}/btpanel_tools.sh
         chmod +x ${btt}
         echo -e "已完成更新请使用btt命令验证是否可用"
 	elif [ "${function}" == "d" ]; then
@@ -406,7 +406,7 @@ count_checking(){
     if [ `grep -c "<script src=\"/static/bt.js\"></script>" $Layout_file` -eq '0' ];then 
         sed -i '/{% block scripts %} {% endblock %}/a <script src="/static/bt.js"></script>' $Layout_file; 
     fi;
-    wget ${down_url}/tools/bt.js -O $JS_file;
+    wget ${down_url}/bt.js -O $JS_file;
     bt restart
 }
 #封装工具
