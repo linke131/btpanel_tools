@@ -6,7 +6,7 @@ panel_path=/www/server/panel
 tools_version='211222'
 #检测新版本
 new_version(){
-    new_version=
+    new_version=$(curl -Ss --connect-timeout 100 -m 300 ${down_url}/version.txt)
     if [ "$new_version" = '' ];then
 	    echo -e "获取版本号失败正在尝试更新......"
 	    wget -O btpanel_tools.sh ${down_url}/btpanel_tools.sh && bash btpanel_tools.sh
@@ -158,12 +158,16 @@ mandatory_landing(){
 	elif [ "${function}" == "2" ]; then
         rm -f ${panel_path}/data/bind.pl
         rm -f ${panel_path}/data/sid.pl
-        wget -O ${panel_path}/data/userInfo.json https://www.btpanel.cm/api/shell/userInfo -t 10
+        wget -O ${panel_path}/data/userInfo.json ${down_url}/userInfo.json -t 10
+        getip=$(curl -Ss --connect-timeout 100 -m 300 https://www.bt.cn/Api/getIpAddress)
+        sed -i "s!127.0.0.1!${getip}!g" ${down_url}/userInfo.json
         back_home
     elif [ "${function}" == "3" ]; then
         rm -f ${panel_path}/data/bind.pl
         rm -f ${panel_path}/data/sid.pl
-        wget -O ${panel_path}/data/userInfo.json https://www.btpanel.cm/api/shell/userInfo -t 10
+        wget -O ${panel_path}/data/userInfo.json ${down_url}/userInfo.json -t 10
+        getip=$(curl -Ss --connect-timeout 100 -m 300 https://www.bt.cn/Api/getIpAddress)
+        sed -i "s!127.0.0.1!${getip}!g" ${down_url}/userInfo.json
         chattr +i ${panel_path}/data/userInfo.json
         back_home
 	elif [ "${function}" == "4" ]; then
