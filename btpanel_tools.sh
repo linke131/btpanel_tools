@@ -348,7 +348,7 @@ open_offline(){
 close_offline(){
     rm -f ${panel_path}/data/home_host.pl
     rm -f ${panel_path}/data/not_network.pl
-    wget -O ${panel_path}/config/hosts.json ${down_url}/tools/Template/hosts.json
+    wget -O ${panel_path}/config/hosts.json ${down_url}/hosts.json
     sed -i 's/[0-9\.]\+[ ]\+www.bt.cn//g' /etc/hosts
     sed -i 's/[0-9\.]\+[ ]\+bt.cn//g' /etc/hosts
     sed -i 's/[0-9\.]\+[ ]\+download.bt.cn//g' /etc/hosts
