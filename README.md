@@ -5,7 +5,12 @@
 ###### 作品截图
  ![btpanel_tools](https://gitee.com/gacjie/btpanel_tools/raw/master/btpanel_tools.jpg)   
 
- 
+###### 技术交流
+脚本官网：www.btpanel.cm  
+技术教程：www.baota.me  
+QQ交流群：365208828       
+TG交流群：t.me/btfans   
+
 ###### 码云项目地址命令   
  **[(点此免费领取0.99元专业版体验券，3188元大礼包)](https://www.bt.cn/?invite_code=MV9yaHFycXY=)**   
 ```shell-session
