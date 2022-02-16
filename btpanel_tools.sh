@@ -173,6 +173,12 @@ repair_environment(){
     yum -y install make cmake gcc gcc-c++ gcc-g77 flex bison file libtool libtool-libs autoconf kernel-devel patch wget libjpeg libjpeg-devel libpng libpng-devel libpng10 libpng10-devel gd gd-devel libxml2 libxml2-devel zlib zlib-devel glib2 glib2-devel tar bzip2 bzip2-devel libevent libevent-devel ncurses ncurses-devel curl curl-devel libcurl libcurl-devel e2fsprogs e2fsprogs-devel krb5 krb5-devel libidn libidn-devel openssl openssl-devel vim-minimal gettext gettext-devel ncurses-devel gmp-devel pspell-devel libcap diffutils ca-certificates net-tools libc-client-devel psmisc libXpm-devel git-core c-ares-devel libicu-devel libxslt libxslt-devel zip unzip glibc.i686 libstdc++.so.6 cairo-devel bison-devel ncurses-devel libaio-devel perl perl-devel perl-Data-Dumper lsof pcre pcre-devel vixie-cron crontabs expat-devel readline-devel libsodium-dev automake perl-ExtUtils-Embed GeoIP GeoIP-devel GeoIP-data freetype freetype-devel libffi-devel libmcrypt-devel epel-release libsodium-devel sqlite-devel tk-devel gdbm-devel db4-devel libpcap-devel xz-devel
     back_home
 }
+#修复拉黑
+repair_pull_black(){
+    update_panel
+    sed -i '/self._check_url/d' ${panel_path}/class/panelPlugin.py
+    /etc/init.d/bt start
+}
 #修复面板
 update_panel(){
     chattr -i /etc/hosts
@@ -449,6 +455,7 @@ main(){
 # (9)卸载面板[本功能会清空所有数据卸载网站环境]      #
 # (z)计算验证[去除宝塔linux面板各种计算题与延时等待] #
 # (y)证书更新[更新系统中的根证书解决证书导致的问题]  #
+# (x)修复拉黑[修复面板并去除拉黑限制（破解版提示）]  #
 #--------------------[降级版本]----------------------#
 # (10)7.8.0 (11)7.7.0 (12)7.6.0 (13)7.5.2 (14)7.5.1  #
 #-------------------[升级查杀库]---------------------#
@@ -515,6 +522,8 @@ main(){
     z)  count_checking
     ;;
     y)  update_ca
+    ;;
+    x)  repair_pull_black
     ;;
     *)  delete
     ;;
