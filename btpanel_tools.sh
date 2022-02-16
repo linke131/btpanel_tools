@@ -433,8 +433,8 @@ main(){
 	echo -e "
 #====================================================#
 #  脚本名称:    BTPanel_tools Version Build ${tools_version}   #
-#  官方网站:    https://www.btpanel.cm/              #
-#  交流方式：   Q群：365208828     TG：t.me/btfans   #
+#  脚本官网：www.btpanel.cm  技术教程：www.baota.me  #
+#  QQ交流群：365208828       TG交流群：t.me/btfans   #
 #----------------------------------------------------#
 #  授权版本:${auth_version}      面板版本:${btpanel_version}             #
 #--------------------[实用工具]----------------------#
