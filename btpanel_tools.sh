@@ -3,7 +3,7 @@
 down_url=https://gitee.com/gacjie/btpanel_tools/raw/master
 btdown_url=https://download.bt.cn
 panel_path=/www/server/panel
-tools_version='211222'
+tools_version='220216'
 #检测新版本
 new_version(){
     new_version=$(curl -Ss --connect-timeout 100 -m 300 ${down_url}/version.txt)
