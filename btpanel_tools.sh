@@ -143,13 +143,9 @@ net.ipv4.tcp_max_orphans = 32768
 #去除强制登陆
 mandatory_landing(){
     clear
-    echo -e "7.7.0及以前版本使用以下命令去限制"
     echo -e "1：删除bind文件"
-    echo -e "2：生成一个随机的用户配置文件"
-    echo -e "7.8.0及以后版本使用以下命令去限制(1月9日修复)"
-    echo -e "3：生成配置文件并锁定文件"
     echo -e "4：解锁配置文件并删除"
-    echo -e "如有失效，请执行4命令解锁。"
+    echo -e "生成配置文件功能已经删除，请执行4命令解锁删除已经生成的文件，不然会被官方拉黑。"
     echo -e "0：退出该功能返回上一层"
     read -p "请输入上面指定代码继续操作:" function
 	if [ "${function}" == "1" ]; then
@@ -158,18 +154,10 @@ mandatory_landing(){
 	elif [ "${function}" == "2" ]; then
         rm -f ${panel_path}/data/bind.pl
         rm -f ${panel_path}/data/sid.pl
-        wget -O ${panel_path}/data/userInfo.json ${down_url}/userInfo.json -t 10
-        getip=$(curl -Ss --connect-timeout 100 -m 300 https://www.bt.cn/Api/getIpAddress)
-        sed -i "s!127.0.0.1!${getip}!g" ${panel_path}/data/userInfo.json
         back_home
     elif [ "${function}" == "3" ]; then
         rm -f ${panel_path}/data/bind.pl
         rm -f ${panel_path}/data/sid.pl
-        wget -O ${panel_path}/data/userInfo.json ${down_url}/userInfo.json -t 10
-        getip=$(curl -Ss --connect-timeout 100 -m 300 https://www.bt.cn/Api/getIpAddress)
-        sed -i "s!127.0.0.1!${getip}!g" ${panel_path}/data/userInfo.json
-        chattr +i ${panel_path}/data/userInfo.json
-        back_home
 	elif [ "${function}" == "4" ]; then
         chattr -i ${panel_path}/data/userInfo.json
         rm -f ${panel_path}/data/userInfo.json
@@ -235,6 +223,12 @@ update_panel(){
 		chattr -R -ia /www
 		cp -ri /www/backup/panel/vhost/* ${panel_path}/vhost/*
     fi
+    chattr -i ${panel_path}/data/auth_list.json
+    rm -f ${panel_path}/data/auth_list.json
+    chattr -i ${panel_path}/data/plugin_bin.pl
+    rm -f ${panel_path}/data/plugin_bin.pl
+    chattr -i ${panel_path}/data/userInfo.json
+    rm -f ${panel_path}/data/userInfo.json
     curl ${btdown_url}/install/update6.sh|bash
     rm -rf www/server/panel/data/bind.pl
     rm -f ${panel_path}/*.pyc
