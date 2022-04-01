@@ -41,7 +41,7 @@ wget -O btpanel_tools.sh https://gitee.com/gacjie/btpanel_tools/raw/master/btpan
 增加腾讯云专享版升级恢复功能     
 减少wget的命令代码尽量本地化执行    
 增加漏洞修复功能，尝试修复已知漏洞     
-部分功能移除后将迁移至Linux_Tools脚本内
+部分功能移除后将迁移至Linux_Tools脚本内    
 2022年2月16日   
 去除生成userinfo配置文件功能，修复面板增加防止被拉黑的相关功能。
 新增修复拉黑功能，可修复面板并去除拉黑限制（破解版提示）。 
