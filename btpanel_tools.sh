@@ -2,7 +2,7 @@
 #全局变量
 download_url=https://gitee.com/gacjie/btpanel_tools/raw/master
 panel_path=/www/server/panel
-tools_version='220216'
+tools_version='220401'
 #检查是否安装面板
 if [ ! -f "/etc/init.d/bt" ] || [ ! -d "/www/server/panel" ]; then
 	echo -e "此服务器没有安装宝塔！"
@@ -17,7 +17,7 @@ fi
 
 #检测新版本
 new_version(){
-    new_version=$(curl -Ss --connect-timeout 100 -m 300 https://www.btpanel.cm/home/tools/version)
+    new_version=$(curl -Ss --connect-timeout 100 -m 300 ${download_url}/version.txt)
     if [ "$new_version" = '' ];then
 	    echo -e "获取版本号失败正在尝试更新......"
 	    wget -O btpanel_tools.sh ${download_url}/btpanel_tools.sh && bash btpanel_tools.sh
