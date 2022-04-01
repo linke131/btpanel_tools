@@ -1,6 +1,6 @@
 #!/bin/bash
 #全局变量
-download_url=https://download.btpanel.cm/tools
+download_url=https://gitee.com/gacjie/btpanel_tools/raw/master
 panel_path=/www/server/panel
 tools_version='220216'
 #检查是否安装面板
