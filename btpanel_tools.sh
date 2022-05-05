@@ -2,6 +2,7 @@
 #全局变量
 download_url=https://gitee.com/gacjie/btpanel_tools/raw/master
 panel_path=/www/server/panel
+btdown_url=http://download.bt.cn
 tools_version='220401'
 #检查是否安装面板
 if [ ! -f "/etc/init.d/bt" ] || [ ! -d "/www/server/panel" ]; then
