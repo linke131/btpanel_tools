@@ -3,7 +3,7 @@
 宝塔linux工具箱是一个主要面向Linux系统的脚本管理工具，已做兼容处理，兼容全部linux系统。
 它包含了一键修改宝塔面板模板、去除强制登陆、一键修复面板、清除系统垃圾缓存、系统优化等一系列常见的Linux运维需求。
 ###### 作品截图
- ![btpanel_tools](https://gitee.com/gacjie/btpanel_tools/raw/master/btpanel_tools.jpg)   
+ ![btpanel_tools](https://github.com/linke131/btpanel_tools/blob/master/btpanel_tools.jpg)   
 
 ###### 技术交流
 脚本官网：www.btpanel.cm  
